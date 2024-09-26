@@ -10,12 +10,14 @@ services:
     volumes:
       - /home/pavel/jenkins_compose/jenkins_configuration:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-  ntp:
-    image: cturra/ntp:latest
-    container_name: ntp
-    restart: always
+  chrony:
+    image: publicarray/chrony:latest
+    container_name: Chrony
+    restart: unless-stopped
     ports:
-      - 123:123/udp
-    environment:
-      - NTP_SERVERS=time.cloudflare.com
-      - LOG_LEVEL=0
+    - 123:123/udp
+    volumes:
+    - ./chrony/chrony.conf:/etc/chrony.conf
+    cap_add:
+      - SYS_TIME
+    network_mode: bridge
